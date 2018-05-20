@@ -54,6 +54,7 @@
         arrayDates = [dictData objectForKey:@"dates"];
         arrayCinemas = [dictData objectForKey:@"cinemas"];
         arrayTimes = [dictData objectForKey:@"times"];
+        [arrayDates insertObject:@"---  Date  ---" atIndex:0];
     }
     else{
         NSLog(@"%@",error);
@@ -115,7 +116,7 @@
         }
         total += seat.price;
     }
-    lblTotal.text = [NSString stringWithFormat:@"Php %.02f",total];
+    lblTotal.text  = [NSString localizedStringWithFormat:@"Php %.2f", total];
 }
 
 -(void)showDate:(id)sender forEvent:(UIEvent*)event{
@@ -176,7 +177,11 @@
 }
 */
 
--(void) refeshPickerList{
+-(void) refeshPickerListCinema{
+    HUB = [[MBProgressHUD alloc]initWithView:self.view];
+    [self.view addSubview:HUB];
+    [HUB showWhileExecuting:@selector(callScheduleURL) onTarget:self withObject:nil animated:YES];
+    arrayCinemasInside = [[NSMutableArray alloc] init];
     for (int i=0; i < [arrayCinemas count]; i++) {
         NSMutableDictionary * dictCinema = [arrayCinemas objectAtIndex:i];
         NSString *parentID = [dictCinema objectForKey:@"parent"];
@@ -184,7 +189,15 @@
             arrayCinemasInside = [dictCinema objectForKey:@"cinemas"];
         }
     }
-    
+    [arrayCinemasInside insertObject:@"--- Cinema ---" atIndex:0];
+    [pickerCinema reloadAllComponents];
+}
+
+-(void) refeshPickerListTime{
+    HUB = [[MBProgressHUD alloc]initWithView:self.view];
+    [self.view addSubview:HUB];
+    [HUB showWhileExecuting:@selector(callScheduleURL) onTarget:self withObject:nil animated:YES];
+   arrayTimesInside = [[NSMutableArray alloc] init];
     for (int i=0; i < [arrayTimes count]; i++) {
         NSMutableDictionary * dictTimes = [arrayTimes objectAtIndex:i];
         NSString *parentID = [dictTimes objectForKey:@"parent"];
@@ -192,8 +205,8 @@
             arrayTimesInside =  [dictTimes objectForKey:@"times"];
         }
     }
+    [arrayTimesInside insertObject:@"--- Time ---" atIndex:0];
     [pickerTimes reloadAllComponents];
-    [pickerCinema reloadAllComponents];
 }
 
 #pragma mark - PickerView
@@ -224,48 +237,87 @@
     [tView setTextAlignment:NSTextAlignmentCenter];
     
     if (thePickerView == pickerDate) {
-        NSMutableDictionary *dictDates = [arrayDates objectAtIndex:row];
-        tView.text = [dictDates objectForKey:@"label"];
-        return tView;
+        if (row > 0) {
+            NSMutableDictionary *dictDates = [arrayDates objectAtIndex:row];
+            tView.text = [dictDates objectForKey:@"label"];
+            return tView;
+        }
+        else{
+            tView.text = @"---  Date  ---";
+            return tView;
+        }
     }
     if (thePickerView == pickerCinema) {
-        NSMutableDictionary *dictDates = [arrayCinemasInside objectAtIndex:row];
-        tView.text = [dictDates objectForKey:@"label"];
-        return tView;
+        if (row > 0) {
+            NSMutableDictionary *dictDates = [arrayCinemasInside objectAtIndex:row];
+            tView.text = [dictDates objectForKey:@"label"];
+            return tView;
+        }
+        else{
+            tView.text = [arrayCinemasInside objectAtIndex:row];
+            return tView;
+        }
     }
     if (thePickerView == pickerTimes) {
-        NSMutableDictionary *dictDates = [arrayTimesInside objectAtIndex:row];
-        tView.text = [dictDates objectForKey:@"label"];
-        return tView;
+        if (row > 0) {
+            NSMutableDictionary *dictDates = [arrayTimesInside objectAtIndex:row];
+            tView.text = [dictDates objectForKey:@"label"];
+            return tView;
+        }
+        else{
+            tView.text =  [arrayTimesInside objectAtIndex:row];
+            return tView;
+        }
     }
     return nil;
 }
 
 - (void)pickerView:(UIPickerView *)thePickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     if (thePickerView == pickerDate) {
-        NSMutableDictionary *dicDates = [arrayDates objectAtIndex:row];
-        btnDate.titleLabel.text = [dicDates objectForKey:@"label"];
-        dateID =  [dicDates objectForKey:@"id"];
-        [self refeshPickerList];
+        if (row > 0) {
+            btnCinema.titleLabel.text = @"--- Cinema ---";
+            NSMutableDictionary *dicDates = [arrayDates objectAtIndex:row];
+            btnDate.titleLabel.text = [dicDates objectForKey:@"label"];
+            dateID =  [dicDates objectForKey:@"id"];
+        }
+        else{
+            btnDate.titleLabel.text =  [arrayDates objectAtIndex:row];
+            dateID = 0;
+        }
+        [self refeshPickerListCinema];
     }
     if (thePickerView == pickerCinema) {
-        NSMutableDictionary *dicCinema = [arrayCinemasInside objectAtIndex:row];
-        btnCinema.titleLabel.text = [dicCinema objectForKey:@"label"];
-        cinemaID =  [dicCinema objectForKey:@"id"];
-        [self refeshPickerList];
+        if (row > 0) {
+            btnTime.titleLabel.text = @"--- Time ---";
+            NSMutableDictionary *dicCinema = [arrayCinemasInside objectAtIndex:row];
+            btnCinema.titleLabel.text = [dicCinema objectForKey:@"label"];
+            cinemaID =  [dicCinema objectForKey:@"id"];
+        }
+        else{
+            btnCinema.titleLabel.text = [arrayCinemasInside objectAtIndex:row];
+            cinemaID = 0;
+        }
+        [self refeshPickerListTime];
+        
     }
     if (thePickerView == pickerTimes) {
-        NSMutableDictionary *dicTimes = [arrayTimesInside objectAtIndex:row];
-        btnTime.titleLabel.text = [dicTimes objectForKey:@"label"];
-        timesID =  [dicTimes objectForKey:@"id"];
-        seatPrice = [[dicTimes objectForKey:@"price"] floatValue];
-        
-        [seatsMappingView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        lblTotal.text = @"Php 0.00";
-        lblSelectedSeats.text = @"";
-        HUB = [[MBProgressHUD alloc]initWithView:self.view];
-        [self.view addSubview:HUB];
-        [HUB showWhileExecuting:@selector(callSeatMapURL) onTarget:self withObject:nil animated:YES];
+        if (row > 0) {
+            NSMutableDictionary *dicTimes = [arrayTimesInside objectAtIndex:row];
+            btnTime.titleLabel.text = [dicTimes objectForKey:@"label"];
+            timesID =  [dicTimes objectForKey:@"id"];
+            seatPrice = [[dicTimes objectForKey:@"price"] floatValue];
+            
+            [seatsMappingView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+            lblTotal.text = @"Php 0.00";
+            lblSelectedSeats.text = @"";
+            HUB = [[MBProgressHUD alloc]initWithView:self.view];
+            [self.view addSubview:HUB];
+            [HUB showWhileExecuting:@selector(callSeatMapURL) onTarget:self withObject:nil animated:YES];
+        }
+        else{
+            btnTime.titleLabel.text = [arrayTimesInside objectAtIndex:row];
+            timesID =  0;
+        }
     }
 
     [popoverController dismissPopoverAnimatd:YES];

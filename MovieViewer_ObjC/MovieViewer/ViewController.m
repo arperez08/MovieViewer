@@ -50,10 +50,16 @@
         lblName.text = [dictData objectForKey:@"canonical_title"];
         lblGenre.text = [dictData objectForKey:@"genre"];
         lblSypnosis.text  = [dictData objectForKey:@"synopsis"];
+        lblDuration.text = [self timeFormatted:[[dictData objectForKey:@"runtime_mins"] intValue]];
         
-        NSString *runtime_mins  = [dictData objectForKey:@"runtime_mins"];
         NSString *release_date = [dictData objectForKey:@"release_date"];
-
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+        NSDate *date = [dateFormatter dateFromString:release_date];
+        NSDateFormatter *dateFormatter2 = [[NSDateFormatter alloc] init];
+        [dateFormatter2 setDateFormat:@"MMM dd, yyyy"];
+        lblRelease.text = [dateFormatter2 stringFromDate:date];
+        
         NSString *poster = [dictData objectForKey:@"poster"];
         NSString *poster_landscape = [dictData objectForKey:@"poster_landscape"];
         [self downloadImageWithURL:[NSURL URLWithString:poster_landscape] completionBlock:^(BOOL succeeded, UIImage *image) {
@@ -73,9 +79,6 @@
     }
 }
 
-
-
-
 - (void)downloadImageWithURL:(NSURL *)url completionBlock:(void (^)(BOOL succeeded, UIImage *image))completionBlock
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -92,5 +95,10 @@
                            }];
 }
 
+- (NSString *)timeFormatted:(int)totalMinutes{
+    int minutes = totalMinutes % 60;
+    int hours = totalMinutes / 60;
+    return [NSString stringWithFormat:@"%02dhr %02dmins",hours, minutes];
+}
 
 @end
