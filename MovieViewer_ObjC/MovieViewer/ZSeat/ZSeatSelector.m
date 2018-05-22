@@ -29,7 +29,14 @@
     NSMutableArray *arraySeats = [arrayAvailableSeat objectForKey:@"seats"];
     
     for (int i=0; i < [arraySeatmap count]; i++) {
+        NSMutableArray *alphabets = [[NSMutableArray alloc] initWithArray:[[UILocalizedIndexedCollation currentCollation] sectionIndexTitles]];
+        
+        NSString *seatLetter = [alphabets objectAtIndex:initial_seat_y];
+        
         NSMutableArray *seatsPerRow = [arraySeatmap objectAtIndex:i];
+        [self createSeatLetterWithPosition:initial_seat_x and:initial_seat_y isAvailable:TRUE isDisabled:TRUE seatName:seatLetter];
+        
+        initial_seat_x += 1;
         for (int x=0; x < [seatsPerRow count]; x++){
             NSString *seatName = [seatsPerRow objectAtIndex:x];
             if (([seatName isEqual: @"a(30)"]) || ([seatName isEqual: @"b(20)"])){
@@ -47,6 +54,8 @@
                 }
             }
         }
+        [self createSeatLetterWithPosition:initial_seat_x and:initial_seat_y isAvailable:TRUE isDisabled:TRUE seatName:seatLetter];
+        
         final_width = initial_seat_x;
         initial_seat_x = 0;
         initial_seat_y += 1;
@@ -59,6 +68,26 @@
     selected_seats = [[NSMutableArray alloc]init];
     [self addSubview:zoomable_view];
 }
+
+- (void)createSeatLetterWithPosition:(int)initial_seat_x and:(int)initial_seat_y isAvailable:(BOOL)available isDisabled:(BOOL)disabled seatName:(NSString*)seatName{
+    
+    UILabel *fromLabel = [[UILabel alloc]initWithFrame:
+                         CGRectMake(initial_seat_x*seat_width,
+                                    initial_seat_y*seat_height,
+                                    seat_width,
+                                    seat_height)];
+    fromLabel.text = seatName;
+    fromLabel.numberOfLines = 1;
+    fromLabel.font = [UIFont fontWithName:@"Helvetica" size: 8.0];
+    fromLabel.baselineAdjustment = YES;
+    fromLabel.adjustsFontSizeToFitWidth = YES;
+    fromLabel.clipsToBounds = YES;
+    fromLabel.backgroundColor = [UIColor clearColor];
+    fromLabel.textColor = [UIColor lightGrayColor];
+    fromLabel.textAlignment = NSTextAlignmentCenter;
+    [zoomable_view addSubview:fromLabel];
+}
+
 - (void)createSeatButtonWithPosition:(int)initial_seat_x and:(int)initial_seat_y isAvailable:(BOOL)available isDisabled:(BOOL)disabled seatName:(NSString*)seatName{
     
     ZSeat *seatButton = [[ZSeat alloc]initWithFrame:
@@ -81,7 +110,6 @@
     [seatButton setSeatName:seatName];
     [seatButton addTarget:self action:@selector(seatSelected:) forControlEvents:UIControlEventTouchDown];
     [zoomable_view addSubview:seatButton];
-    
 }
 
 #pragma mark - Seat Selector Methods
@@ -90,15 +118,18 @@
     if (!sender.selected_seat && sender.available) {
         if (self.selected_seat_limit) {
             [self checkSeatLimitWithSeat:sender];
-        } else {
+        }
+        else {
             [self setSeatAsSelected:sender];
             [selected_seats addObject:sender];
         }
-    } else {
+    }
+    else {
         [selected_seats removeObject:sender];
         if (sender.available && sender.disabled) {
             [self setSeatAsDisabled:sender];
-        } else if (sender.available && !sender.disabled) {
+        }
+        else if (sender.available && !sender.disabled) {
             [self setSeatAsAvaiable:sender];
         }
     }
@@ -110,16 +141,17 @@
     if ([selected_seats count]<self.selected_seat_limit) {
         [self setSeatAsSelected:sender];
         [selected_seats addObject:sender];
-    } else {
-        ZSeat *seat_to_make_avaiable = [selected_seats objectAtIndex:0];
-        if (seat_to_make_avaiable.disabled)
-            [self setSeatAsDisabled:seat_to_make_avaiable];
-        else
-            [self setSeatAsAvaiable:seat_to_make_avaiable];
-        [selected_seats removeObjectAtIndex:0];
-        [self setSeatAsSelected:sender];
-        [selected_seats addObject:sender];
     }
+//    else {
+//        ZSeat *seat_to_make_avaiable = [selected_seats objectAtIndex:0];
+//        if (seat_to_make_avaiable.disabled)
+//            [self setSeatAsDisabled:seat_to_make_avaiable];
+//        else
+//            [self setSeatAsAvaiable:seat_to_make_avaiable];
+//        [selected_seats removeObjectAtIndex:0];
+//        [self setSeatAsSelected:sender];
+//        [selected_seats addObject:sender];
+//    }
 }
 
 #pragma mark - Seat Images & Availability

@@ -84,7 +84,9 @@
 
 -(void) mapSeats :(NSDictionary *)dictData{
     ZSeatSelector *seat = [[ZSeatSelector alloc]initWithFrame:CGRectMake(0, 0, seatsMappingView.frame.size.width, seatsMappingView.frame.size.height)];
-    [seat setSeatSize:CGSizeMake(10, 10)];
+    
+    float seatSize = seatsMappingView.frame.size.width / 40;
+    [seat setSeatSize:CGSizeMake(seatSize, seatSize)];
     [seat setAvailableImage:[UIImage imageNamed:@"available"]
         andUnavailableImage:[UIImage imageNamed:@"unavailable"]
            andDisabledImage:[UIImage imageNamed:@"unavailable"]
@@ -93,6 +95,8 @@
     [seat setSeat_price:seatPrice];
     [seat setMap:dictData];
     seat.seat_delegate = self;
+    seat.minimumZoomScale = 1.0;
+    seat.maximumZoomScale = 10.0;
     [seatsMappingView addSubview:seat];
 }
 
@@ -102,19 +106,25 @@
 }
 
 -(void)getSelectedSeats:(NSMutableArray *)seats{
-    float total=0;
+    float total=0.00;
     NSString *selectedSeats = @"";
-    for (int i=0; i<[seats count]; i++) {
-        ZSeat *seat = [seats objectAtIndex:i];
-        if (i == 0) {
-            selectedSeats = seat.seatName;
-            lblSelectedSeats.text = seat.seatName;
+    
+    if ([seats count] == 0){
+        lblSelectedSeats.text = @"";
+    }
+    else{
+        for (int i=0; i<[seats count]; i++) {
+            ZSeat *seat = [seats objectAtIndex:i];
+            if (i == 0) {
+                selectedSeats = seat.seatName;
+                lblSelectedSeats.text = seat.seatName;
+            }
+            else{
+                selectedSeats = [NSString stringWithFormat:@"%@, %@",selectedSeats,seat.seatName];
+                lblSelectedSeats.text = selectedSeats;
+            }
+            total += seat.price;
         }
-        else{
-            selectedSeats = [NSString stringWithFormat:@"%@, %@",selectedSeats,seat.seatName];
-            lblSelectedSeats.text = selectedSeats;
-        }
-        total += seat.price;
     }
     lblTotal.text  = [NSString localizedStringWithFormat:@"Php %.2f", total];
 }
