@@ -55,17 +55,6 @@ class ViewController: UIViewController {
                                     print("error trying to convert data to JSON")
                                     return
                             }
-
-                            let posterURL = (todo["poster"] as! String)
-                            let poster_landscape = (todo["poster_landscape"] as! String)
-                            
-                            if let url = URL(string: posterURL) {
-                                self.downloadImagePoster(url: url)
-                            }
-                            
-                            if let url = URL(string: poster_landscape) {
-                                self.downloadImagePosterLandscape(url: url)
-                            }
                             
                             self.lblName.text = (todo["canonical_title"] as! String)
                             self.lblGenre.text = (todo["genre"] as! String)
@@ -87,6 +76,17 @@ class ViewController: UIViewController {
                             else {
                                 self.lblRelease.text = (todo["release_date"] as! String)
                             }
+
+                            let posterURL = (todo["poster"] as! String)
+                            let poster_landscape = (todo["poster_landscape"] as! String)
+                            
+                            if let url = URL(string: posterURL) {
+                                self.downloadImagePoster(url: url)
+                            }
+                            
+                            if let url = URL(string: poster_landscape) {
+                                self.downloadImagePosterLandscape(url: url)
+                            }
                         }
                         catch  {
                             print("error trying to convert data to JSON")
@@ -100,20 +100,25 @@ class ViewController: UIViewController {
     }
 
     func downloadImagePoster(url: URL) {
+        print("Download Started")
         getDataFromUrl(url: url) { data, response, error in
             guard let data = data, error == nil else { return }
             print(response?.suggestedFilename ?? url.lastPathComponent)
             DispatchQueue.main.async() {
-                self.imgPoster2.image = UIImage(data: data)
+                self.imgPoster2.image =  UIImage(data: data)
+                print("Download Finished")
             }
         }
     }
+    
     func downloadImagePosterLandscape(url: URL) {
+        print("Download Started")
         getDataFromUrl(url: url) { data, response, error in
             guard let data = data, error == nil else { return }
             print(response?.suggestedFilename ?? url.lastPathComponent)
             DispatchQueue.main.async() {
-                self.imgPoster.image = UIImage(data: data)
+                self.imgPoster.image =  UIImage(data: data)
+                print("Download Finished")
             }
         }
     }
