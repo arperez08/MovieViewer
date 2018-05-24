@@ -9,9 +9,19 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    @IBOutlet var lblName: UILabel!
+    @IBOutlet var lblGenre: UILabel!
+    @IBOutlet var lblAdvisory: UILabel!
+    @IBOutlet var lblDuration: UILabel!
+    @IBOutlet var lblRelease: UILabel!
+    @IBOutlet var lblSypnosis: UILabel!
+    @IBOutlet var imgPoster: UIImageView!
+    @IBOutlet var imgPoster2: UIImageView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "Movie Viewer"
         // Do any additional setup after loading the view, typically from a nib.
         self.callWebserviceURL();
     }
@@ -21,6 +31,15 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    func minutesToHoursMinutes (minutes : Int) -> (String) {
+        //return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
+        let intMinutes = minutes % 60
+        let intHours = minutes / 60
+        let strResult = String(intHours) + "hrs " + String(intMinutes) + "mins"
+        return strResult
+    }
+    
+    
     func callWebserviceURL() {
         let urlString = URL(string: "http://ec2-52-76-75-52.ap-southeast-1.compute.amazonaws.com/movie.json")
         if let url = urlString {
@@ -36,13 +55,7 @@ class ViewController: UIViewController {
                                     print("error trying to convert data to JSON")
                                     return
                             }
-                            self.lblName.text = (todo["canonical_title"] as! String)
-                            self.lblGenre.text = (todo["genre"] as! String)
-                            self.lblAdvisory.text = (todo["advisory_rating"] as! String)
-                            self.lblDuration.text = (todo["runtime_mins"] as! String)
-                            self.lblRelease.text = (todo["release_date"] as! String)
-                            self.lblSypnosis.text = (todo["synopsis"] as! String)
-                            
+
                             let posterURL = (todo["poster"] as! String)
                             let poster_landscape = (todo["poster_landscape"] as! String)
                             
@@ -53,7 +66,27 @@ class ViewController: UIViewController {
                             if let url = URL(string: poster_landscape) {
                                 self.downloadImagePosterLandscape(url: url)
                             }
-
+                            
+                            self.lblName.text = (todo["canonical_title"] as! String)
+                            self.lblGenre.text = (todo["genre"] as! String)
+                            self.lblAdvisory.text = (todo["advisory_rating"] as! String)
+                            self.lblSypnosis.text = (todo["synopsis"] as! String)
+                            
+                            let strRuntime = (todo["runtime_mins"] as! String)
+                            let intRunTime = (strRuntime as NSString).integerValue
+                            self.lblDuration.text = self.minutesToHoursMinutes(minutes: intRunTime)
+                            
+                            let dateFormatterGet = DateFormatter()
+                            dateFormatterGet.dateFormat = "yyyy-MM-dd"
+                            let dateFormatterPrint = DateFormatter()
+                            dateFormatterPrint.dateFormat = "MMM dd, yyyy"
+                            
+                            if let date = dateFormatterGet.date(from: (todo["release_date"] as! String)){
+                                self.lblRelease.text = (dateFormatterPrint.string(from: date))
+                            }
+                            else {
+                                self.lblRelease.text = (todo["release_date"] as! String)
+                            }
                         }
                         catch  {
                             print("error trying to convert data to JSON")
@@ -90,16 +123,6 @@ class ViewController: UIViewController {
             completion(data, response, error)
             }.resume()
     }
-
-    @IBOutlet var lblName: UILabel!
-    @IBOutlet var lblGenre: UILabel!
-    @IBOutlet var lblAdvisory: UILabel!
-    @IBOutlet var lblDuration: UILabel!
-    @IBOutlet var lblRelease: UILabel!
-    @IBOutlet var lblSypnosis: UILabel!
-    @IBOutlet var imgPoster: UIImageView!
-    @IBOutlet var imgPoster2: UIImageView!
-    
 }
 
 

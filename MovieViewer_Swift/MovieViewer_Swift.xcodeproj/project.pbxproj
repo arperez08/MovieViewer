@@ -15,6 +15,7 @@
 		1451CFF220AFC10900F38D3B /* MovieViewer_SwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1451CFF120AFC10900F38D3B /* MovieViewer_SwiftUITests.swift */; };
 		1451D00120AFC2F900F38D3B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1451CFFF20AFC2F900F38D3B /* Main.storyboard */; };
 		1451D00320B07D5700F38D3B /* ReserveSeatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1451D00220B07D5700F38D3B /* ReserveSeatsViewController.swift */; };
+		1457055E20B6560800B9F475 /* ZSeatSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1457055D20B6560800B9F475 /* ZSeatSelector.swift */; };
 		1485B17820B12C8400C9250C /* selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 1485B17520B12C8400C9250C /* selected.png */; };
 		1485B17920B12C8400C9250C /* unavailable.png in Resources */ = {isa = PBXBuildFile; fileRef = 1485B17620B12C8400C9250C /* unavailable.png */; };
 		1485B17A20B12C8400C9250C /* available.png in Resources */ = {isa = PBXBuildFile; fileRef = 1485B17720B12C8400C9250C /* available.png */; };
@@ -52,6 +53,7 @@
 		1451CFF320AFC10900F38D3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1451D00020AFC2F900F38D3B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1451D00220B07D5700F38D3B /* ReserveSeatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReserveSeatsViewController.swift; sourceTree = "<group>"; };
+		1457055D20B6560800B9F475 /* ZSeatSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZSeatSelector.swift; sourceTree = "<group>"; };
 		1485B17520B12C8400C9250C /* selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selected.png; sourceTree = "<group>"; };
 		1485B17620B12C8400C9250C /* unavailable.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unavailable.png; sourceTree = "<group>"; };
 		1485B17720B12C8400C9250C /* available.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = available.png; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 				1451CFE520AFC10900F38D3B /* MovieViewer_SwiftTests */,
 				1451CFF020AFC10900F38D3B /* MovieViewer_SwiftUITests */,
 				1451CFCF20AFC10600F38D3B /* Products */,
+				1457057820B663C000B9F475 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -108,6 +111,7 @@
 				1451CFD120AFC10600F38D3B /* AppDelegate.swift */,
 				1451CFD320AFC10600F38D3B /* ViewController.swift */,
 				1451D00220B07D5700F38D3B /* ReserveSeatsViewController.swift */,
+				1457055D20B6560800B9F475 /* ZSeatSelector.swift */,
 				1451CFD820AFC10900F38D3B /* Assets.xcassets */,
 				1451CFFF20AFC2F900F38D3B /* Main.storyboard */,
 				1451CFDA20AFC10900F38D3B /* LaunchScreen.storyboard */,
@@ -133,6 +137,13 @@
 				1451CFF320AFC10900F38D3B /* Info.plist */,
 			);
 			path = MovieViewer_SwiftUITests;
+			sourceTree = "<group>";
+		};
+		1457057820B663C000B9F475 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		1485B17B20B12C8700C9250C /* Images */ = {
@@ -281,6 +292,7 @@
 			files = (
 				1451CFD420AFC10600F38D3B /* ViewController.swift in Sources */,
 				1451CFD220AFC10600F38D3B /* AppDelegate.swift in Sources */,
+				1457055E20B6560800B9F475 /* ZSeatSelector.swift in Sources */,
 				1451D00320B07D5700F38D3B /* ReserveSeatsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
